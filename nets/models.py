@@ -118,11 +118,14 @@ class MLPNetX(torch.nn.Module):
         for iter_layer in self.layerx:
             x = F.relu(self.BNx(iter_layer(x)))    # Qin add BN Apr29
             # x = self.BNx(iter_layer(x))    # Qin add BN Apr29
-            # x = F.dropout(x, self.dropout, training=self.training)
+            x = F.dropout(x, self.dropout, training=self.training)
         x = self.layer2(x)
         x = F.dropout(x, p=self.dropout, training=self.training)
         # x= torch.relu(x)
+        # return x
         return F.log_softmax(x, dim=1)
+
+
 
 class MLPNet1(torch.nn.Module):
     def __init__(self,

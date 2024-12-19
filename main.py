@@ -382,7 +382,7 @@ try:
 
             best_val_acc_f1 = 0
             best_val_f1 = 0
-            best_test_f1 = 0
+            best_val_acc = 0
             saliency, prev_out = None, None
             test_acc, test_bacc, test_f1 = 0.0, 0.0, 0.0
             CountNotImproved = 0
@@ -395,12 +395,15 @@ try:
                 train_acc, val_acc, tmp_test_acc = accs
                 train_f1, val_f1, tmp_test_f1 = f1s
                 val_acc_f1 = (val_acc + val_f1) / 2.
-                if tmp_test_f1 > best_test_f1:
+                if val_acc > best_val_acc:
+                # if tmp_test_f1 > best_test_f1:
+                    best_val_acc = val_acc
+                    best_val_loss = val_loss
                     if epoch> 5:
                         goodAug = True
                     # best_val_acc_f1 = val_acc_f1
                     # best_val_f1 = val_f1
-                    best_test_f1 = tmp_test_f1
+                    # best_test_f1 = tmp_test_f1
                     test_acc = accs[2]
                     test_bacc = baccs[2]
                     test_f1 = f1s[2]
@@ -423,9 +426,9 @@ try:
                 dataset_to_print = args.Direct_dataset.replace('/', '_') + str(args.to_undirected)
             else:
                 dataset_to_print = args.undirect_dataset
-            print(net_to_print+'layer'+str(args.layer), dataset_to_print, "Aug", str(args.AugDirect), 'EndEpoch', str(end_epoch), 'lr', args.lr)
+            print(net_to_print+'layer'+str(args.layer), dataset_to_print,  'EndEpoch', str(end_epoch), 'lr', args.lr)
             print('Split{:3d}, acc: {:.2f}, bacc: {:.2f}, f1: {:.2f}'.format(split, test_acc * 100, test_bacc * 100, test_f1 * 100))
-            print(net_to_print, args.layer, dataset_to_print, "Aug", str(args.AugDirect), 'EndEpoch', str(end_epoch), 'lr', args.lr, file=log_file)
+            print(net_to_print, args.layer, dataset_to_print, 'EndEpoch', str(end_epoch), 'lr', args.lr, file=log_file)
             print('Split{:3d}, acc: {:.2f}, bacc: {:.2f}, f1: {:.2f}'.format(split, test_acc * 100, test_bacc * 100, test_f1 * 100), file=log_file)
             macro_F1.append(test_f1*100)
             acc_list.append(test_acc*100)
@@ -444,8 +447,8 @@ try:
             std_dev_acc = statistics.stdev(acc_list)
             average_bacc = statistics.mean(bacc_list)
             std_dev_bacc = statistics.stdev(bacc_list)
-            print(net_to_print+str(args.layer)+'_'+dataset_to_print+ "_Aug"+ str(args.AugDirect)+"_acc"+f"{average_acc:.1f}±{std_dev_acc:.1f}"+"_bacc"+f"{average_bacc:.1f}±{std_dev_bacc:.1f}"+'_Macro F1:'+f"{average:.1f}±{std_dev:.1f}")
-            print(net_to_print+str(args.layer)+'_'+dataset_to_print+ "_Aug"+ str(args.AugDirect)+"_acc"+f"{average_acc:.1f}±{std_dev_acc:.1f}"+"_bacc"+f"{average_bacc:.1f}±{std_dev_bacc:.1f}"+'_Macro F1:'+f"{average:.1f}±{std_dev:.1f}", file=log_file)
+            print(net_to_print+str(args.layer)+'_'+dataset_to_print+ "_acc"+f"{average_acc:.1f}±{std_dev_acc:.1f}"+"_bacc"+f"{average_bacc:.1f}±{std_dev_bacc:.1f}"+'_Macro F1:'+f"{average:.1f}±{std_dev:.1f}")
+            print(net_to_print+str(args.layer)+'_'+dataset_to_print+ "_acc"+f"{average_acc:.1f}±{std_dev_acc:.1f}"+"_bacc"+f"{average_bacc:.1f}±{std_dev_bacc:.1f}"+'_Macro F1:'+f"{average:.1f}±{std_dev:.1f}", file=log_file)
 
 
 except KeyboardInterrupt:
